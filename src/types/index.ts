@@ -14,7 +14,7 @@ export interface User {
   updated_at: string
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T
   error?: string
   message?: string

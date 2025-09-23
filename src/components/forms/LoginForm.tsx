@@ -71,7 +71,7 @@ export function LoginForm() {
       } else {
         router.push(ROUTES.DASHBOARD)
       }
-    } catch (error) {
+    } catch {
       setErrors({ general: 'Đã có lỗi xảy ra. Vui lòng thử lại sau.' })
     } finally {
       setIsLoading(false)

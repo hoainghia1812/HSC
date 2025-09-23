@@ -20,7 +20,7 @@ export function StockTicker() {
   return (
     <section className="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-2 overflow-hidden">
       <div className="flex">
-        <div className="flex items-center space-x-8 px-4 animate-scroll">
+        <div className="flex items-center space-x-8 px-4 ticker-scroll">
           {tickerData.map((item, index) => (
             <div key={`${item.symbol}-${index}`} className="flex items-center space-x-2 whitespace-nowrap">
               <span className="font-semibold text-yellow-400">{item.symbol}</span>
@@ -50,12 +50,17 @@ export function StockTicker() {
       </div>
       
       <style jsx>{`
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        .ticker-scroll {
+          animation: tickerScroll 60s linear infinite;
         }
-        .animate-scroll {
-          animation: scroll 60s linear infinite;
+        
+        @keyframes tickerScroll {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </section>

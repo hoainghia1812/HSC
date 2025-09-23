@@ -8,10 +8,9 @@ import { StockPrice } from '@/services/stockApi'
 
 interface StockCardProps {
   stock: StockPrice
-  index: number
 }
 
-function StockCard({ stock, index }: StockCardProps) {
+function StockCard({ stock }: StockCardProps) {
   const isUp = stock.changePercent >= 0
   
   return (
@@ -144,8 +143,8 @@ export function TopStocks() {
 
         {/* Most Active Stocks */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {data.mostActive.slice(0, 8).map((stock, index) => (
-            <StockCard key={stock.symbol} stock={stock} index={index} />
+          {data.mostActive.slice(0, 8).map((stock) => (
+            <StockCard key={stock.symbol} stock={stock} />
           ))}
         </div>
 
@@ -159,7 +158,7 @@ export function TopStocks() {
                 Top tăng giá
               </h3>
               <div className="space-y-3">
-                {data.topGainers.slice(0, 5).map((stock, index) => (
+                {data.topGainers.slice(0, 5).map((stock) => (
                   <div key={stock.symbol} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                     <div>
                       <div className="font-semibold text-green-800">{stock.symbol}</div>
@@ -183,7 +182,7 @@ export function TopStocks() {
                 Top giảm giá
               </h3>
               <div className="space-y-3">
-                {data.topLosers.slice(0, 5).map((stock, index) => (
+                {data.topLosers.slice(0, 5).map((stock) => (
                   <div key={stock.symbol} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
                     <div>
                       <div className="font-semibold text-red-800">{stock.symbol}</div>
