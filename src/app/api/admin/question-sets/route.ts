@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
-import { Database } from '@/types/database'
 
 type QuestionSetWithRelations = {
   id: string
@@ -13,8 +12,6 @@ type QuestionSetWithRelations = {
   } | null
   questions: { count: number } | unknown[]
 }
-
-type QuestionSetInsert = Database['public']['Tables']['question_sets']['Insert']
 
 // Get all question sets
 export async function GET(request: NextRequest) {
@@ -96,14 +93,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Create question set
-    const questionSetData: QuestionSetInsert = {
+    const questionSetData = {
       title: title.trim(),
       created_by: user.id
     }
     
     const { data, error } = await supabaseAdmin
       .from('question_sets')
-      .insert(questionSetData as never)
+      // @ts-expect-error - Supabase type issue with insert array
+      .insert([questionSetData])
       .select()
       .single()
 

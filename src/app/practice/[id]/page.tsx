@@ -10,7 +10,8 @@ interface PageProps {
   }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: Promise<PageProps>): Promise<Metadata> {
+  const { params } = await props
   const { data: questionSet, error } = await supabaseAdmin
     .from('question_sets')
     .select('title')
@@ -76,7 +77,8 @@ async function getQuestionSet(id: string) {
   return { id: (setRow as QuestionSetRow).id, title: (setRow as QuestionSetRow).title, questions: mapped }
 }
 
-export default async function PracticeQuestionSetPage({ params }: PageProps) {
+export default async function PracticeQuestionSetPage(props: Promise<PageProps>) {
+  const { params } = await props
   const questionSet = await getQuestionSet(params.id)
 
   if (!questionSet) {
