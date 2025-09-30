@@ -36,9 +36,7 @@ export default function Home() {
               <Button size="xl" className="bg-gradient-to-r from-green-600 to-blue-600 shadow-xl shadow-green-500/25">
                 <a href={ROUTES.REGISTER}>Bắt đầu ôn thi ngay</a>
               </Button>
-              <Button variant="outline" size="xl" className="border-green-600 text-green-600 hover:bg-green-50">
-                <a href={ROUTES.LOGIN}>Đăng nhập</a>
-              </Button>
+             
             </div>
             
             <div className="text-sm text-gray-500">

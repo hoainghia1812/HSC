@@ -1,55 +1,78 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { ROUTES } from '@/constants'
+import { NextRequest, NextResponse } from 'next/server'
+import { verifyToken } from '@/lib/auth'
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
+// Routes that require authentication
+const protectedRoutes = ['/dashboard', '/profile', '/exams', '/practice', '/results']
+
+// Routes that require admin role
+const adminRoutes = ['/admin']
+
+// Routes that should redirect to dashboard if user is already logged in
+const authRoutes = ['/login', '/register']
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
   
-  // Check if Supabase environment variables exist
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    console.warn('Supabase environment variables not found. Auth middleware disabled.')
-    return res
+  // Get token from Authorization header or cookies
+  const authHeader = request.headers.get('authorization')
+  const token = authHeader?.replace('Bearer ', '') || request.cookies.get('auth_token')?.value
+
+  // Debug logs (disable in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 Middleware Debug:')
+    console.log('Path:', pathname)
+    console.log('Token present:', !!token)
   }
 
-  const supabase = createMiddlewareClient({ req, res })
+  // Check route types
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
+  const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route))
+  const isAuthRoute = authRoutes.some(route => pathname.startsWith(route))
 
-  // Refresh session if expired - required for Server Components
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  // If accessing protected or admin route without token, redirect to login
+  if ((isProtectedRoute || isAdminRoute) && !token) {
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
 
-  // Auth routes - redirect to dashboard if already authenticated
-  if (req.nextUrl.pathname.startsWith('/auth/')) {
-    if (session) {
-      return NextResponse.redirect(new URL(ROUTES.DASHBOARD, req.url))
+  // If token exists, verify it
+  if (token) {
+    const user = verifyToken(token)
+    
+    if (process.env.NODE_ENV === 'development') {
+      console.log('User from token:', user)
+      console.log('User role:', user?.role)
     }
-    return res
+    
+    // If token is invalid and accessing protected/admin route, redirect to login
+    if (!user && (isProtectedRoute || isAdminRoute)) {
+      const loginUrl = new URL('/login', request.url)
+      loginUrl.searchParams.set('redirect', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
+    
+    // If accessing admin route but user is not admin, redirect to dashboard
+    if (user && isAdminRoute && user.role !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
+    }
+    
+    // If token is valid and accessing auth routes, redirect based on role
+    if (user && isAuthRoute) {
+      if (user.role === 'admin') {
+        return NextResponse.redirect(new URL('/admin', request.url))
+      } else {
+        return NextResponse.redirect(new URL('/', request.url))
+      }
+    }
   }
 
-  // Protected routes - redirect to login if not authenticated
-  const protectedRoutes = ['/dashboard', '/profile', '/admin']
-  const isProtectedRoute = protectedRoutes.some(route => 
-    req.nextUrl.pathname.startsWith(route)
-  )
-
-  if (isProtectedRoute && !session) {
-    return NextResponse.redirect(new URL(ROUTES.LOGIN, req.url))
-  }
-
-  return res
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|public/).*)',
-  ],
-}
+  matcher: ['/((?!_next|api|.*\\..*).*)'], // giữ matcher nếu có
+  runtime: 'nodejs', // ⚡ ép dùng Node.js runtime thay vì Edge
+};
+
+

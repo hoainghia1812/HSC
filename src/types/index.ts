@@ -8,10 +8,33 @@ export type Enums<T extends keyof Database['public']['Enums']> = Database['publi
 export interface User {
   id: string
   email: string
-  full_name?: string
-  avatar_url?: string
+  full_name: string
+  phone: string
+  birth_date?: string
+  role: 'admin' | 'user' | 'vip1' | 'vip2' | 'vip3'
   created_at: string
-  updated_at: string
+}
+
+export interface AuthUser {
+  id: string
+  email: string
+  full_name: string
+  phone: string
+  role: 'admin' | 'user' | 'vip1' | 'vip2' | 'vip3'
+}
+
+export interface RegisterFormData {
+  full_name: string
+  email: string
+  phone: string
+  birth_date?: string
+  password: string
+  confirmPassword: string
+}
+
+export interface LoginFormData {
+  email: string
+  password: string
 }
 
 export interface ApiResponse<T = unknown> {

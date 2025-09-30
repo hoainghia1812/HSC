@@ -20,8 +20,8 @@ export const API_ENDPOINTS = {
 // Route paths
 export const ROUTES = {
   HOME: '/',
-  LOGIN: '/auth/login',
-  REGISTER: '/auth/register',
+  LOGIN: '/login',
+  REGISTER: '/register',
   DASHBOARD: '/dashboard',
   PROFILE: '/profile',
   EXAMS: '/exams',
