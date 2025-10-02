@@ -23,6 +23,10 @@ export default function PracticeList({ questionSets }: PracticeListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
 
+  // Debug logging
+  console.log('PracticeList received questionSets:', questionSets)
+  console.log('QuestionSets length:', questionSets?.length || 0)
+
   // Lọc theo tìm kiếm
   const filteredSets = useMemo(() => {
     if (!searchQuery.trim()) return questionSets

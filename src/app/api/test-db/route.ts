@@ -1,14 +1,26 @@
 import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
-// Get all available question sets for practice - PUBLIC ACCESS
-// All users can see all question sets created by any admin
+// Test database connection and question sets
 export async function GET() {
   try {
-    console.log('Fetching question sets for practice...')
+    console.log('Testing database connection...')
     
-    // Get question sets with question count - NO AUTHENTICATION REQUIRED
-    // This ensures all users can see all question sets
+    // Test basic connection
+    const { data: testData, error: testError } = await supabaseAdmin
+      .from('question_sets')
+      .select('count')
+      .limit(1)
+
+    if (testError) {
+      console.error('Database connection error:', testError)
+      return NextResponse.json({ 
+        error: 'Database connection failed',
+        details: testError.message 
+      }, { status: 500 })
+    }
+
+    // Get all question sets
     const { data: questionSets, error } = await supabaseAdmin
       .from('question_sets')
       .select(`
@@ -21,7 +33,10 @@ export async function GET() {
 
     if (error) {
       console.error('Failed to fetch question sets:', error)
-      return NextResponse.json({ error: 'Failed to fetch question sets' }, { status: 500 })
+      return NextResponse.json({ 
+        error: 'Failed to fetch question sets',
+        details: error.message 
+      }, { status: 500 })
     }
 
     console.log('Raw question sets from DB:', questionSets)
@@ -39,8 +54,6 @@ export async function GET() {
         ? set.questions.length 
         : (set.questions as { count: number })?.count || 0
       
-      console.log(`Question set: ${set.title}, Questions: ${questionCount}`)
-      
       return {
         id: set.id,
         title: set.title,
@@ -49,17 +62,20 @@ export async function GET() {
       }
     })
 
-    console.log(`Found ${formattedQuestionSets.length} question sets for practice`)
-
     return NextResponse.json({ 
+      success: true,
       questionSets: formattedQuestionSets,
-      total: formattedQuestionSets.length 
+      total: formattedQuestionSets.length,
+      rawData: questionSets
     })
 
   } catch (error) {
-    console.error('Practice question sets API error:', error)
+    console.error('Test API error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }

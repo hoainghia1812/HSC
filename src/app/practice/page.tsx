@@ -10,12 +10,28 @@ export const dynamic = 'force-dynamic'
 
 async function getQuestionSets() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/practice/question-sets`, {
+    console.log('Fetching question sets from API...')
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/practice/question-sets`
+    console.log('API URL:', url)
+    
+    const res = await fetch(url, {
       cache: 'no-store'
     })
-    if (!res.ok) throw new Error('Failed to fetch question sets')
+    
+    console.log('Response status:', res.status)
+    console.log('Response ok:', res.ok)
+    
+    if (!res.ok) {
+      const errorText = await res.text()
+      console.error('API Error Response:', errorText)
+      throw new Error(`Failed to fetch question sets: ${res.status}`)
+    }
+    
     const data = await res.json()
-    return data.questionSets
+    console.log('API Response data:', data)
+    console.log('Question sets count:', data.questionSets?.length || 0)
+    
+    return data.questionSets || []
   } catch (error) {
     console.error('Error fetching question sets:', error)
     return []
