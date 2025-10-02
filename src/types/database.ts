@@ -78,61 +78,55 @@ export interface Database {
         Row: {
           id: string
           title: string
-          created_by: string
+          created_by: string | null
           created_at: string
-          updated_at: string
         }
         Insert: {
           id?: string
           title: string
-          created_by: string
+          created_by: string | null
           created_at?: string
-          updated_at?: string
         }
         Update: {
           id?: string
           title?: string
-          created_by?: string
+          created_by?: string | null
           created_at?: string
-          updated_at?: string
         }
       }
       questions: {
         Row: {
           id: string
           question_set_id: string
-          question_text: string
-          question_type: 'multiple_choice' | 'true_false' | 'essay'
-          options: QuestionOption[] | null
-          correct_answer: string | null
-          explanation: string | null
-          difficulty: 'easy' | 'medium' | 'hard'
+          content: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          correct_option: 'A' | 'B' | 'C' | 'D'
           created_at: string
-          updated_at: string
         }
         Insert: {
           id?: string
           question_set_id: string
-          question_text: string
-          question_type: 'multiple_choice' | 'true_false' | 'essay'
-          options?: QuestionOption[] | null
-          correct_answer?: string | null
-          explanation?: string | null
-          difficulty?: 'easy' | 'medium' | 'hard'
+          content: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          correct_option: 'A' | 'B' | 'C' | 'D'
           created_at?: string
-          updated_at?: string
         }
         Update: {
           id?: string
           question_set_id?: string
-          question_text?: string
-          question_type?: 'multiple_choice' | 'true_false' | 'essay'
-          options?: QuestionOption[] | null
-          correct_answer?: string | null
-          explanation?: string | null
-          difficulty?: 'easy' | 'medium' | 'hard'
+          content?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          correct_option?: 'A' | 'B' | 'C' | 'D'
           created_at?: string
-          updated_at?: string
         }
       }
     }

@@ -5,16 +5,17 @@ import PracticeQuestions from '@/components/practice/practice-questions'
 import { QuestionOption } from '@/types/database'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params
   const { data: questionSet, error } = await supabaseAdmin
     .from('question_sets')
     .select('title')
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !questionSet) {
@@ -77,7 +78,8 @@ async function getQuestionSet(id: string) {
 }
 
 export default async function PracticeQuestionSetPage({ params }: PageProps) {
-  const questionSet = await getQuestionSet(params.id)
+  const { id } = await params
+  const questionSet = await getQuestionSet(id)
 
   if (!questionSet) {
     notFound()

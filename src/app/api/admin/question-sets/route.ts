@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
     
     const { data, error } = await supabaseAdmin
       .from('question_sets')
-      .insert(questionSetData as never)
+      .insert([questionSetData] as never)
       .select()
       .single()
 

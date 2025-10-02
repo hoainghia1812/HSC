@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('questions')
-      .insert(insertPayload)
+      .insert([insertPayload] as never)
       .select('id, content, option_a, option_b, option_c, option_d, correct_option, created_at')
       .single()
 
