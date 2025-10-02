@@ -87,27 +87,32 @@ export async function registerUser(userData: RegisterData): Promise<{ user?: Aut
     console.log('🔍 registerUser: Checking for existing user...')
     
     // Check if email or phone already exists
-    const { data: existingUser, error: checkError } = await supabaseAdmin
+    const { data: existingUsers, error: checkError } = await supabaseAdmin
       .from('users')
       .select('email, phone')
       .or(`email.eq.${userData.email},phone.eq.${userData.phone}`)
-      .maybeSingle()
 
     console.log('🔍 registerUser: Check existing user result:', { 
-      hasData: !!existingUser, 
+      hasData: !!existingUsers, 
+      dataLength: existingUsers?.length || 0,
       hasError: !!checkError,
       errorCode: checkError?.code,
       errorMessage: checkError?.message
     })
 
-    if (existingUser && !checkError) {
-      console.log('⚠️  registerUser: Found existing user')
-      const user = existingUser as { email: string; phone: string }
-      if (user.email === userData.email) {
+    if (checkError) {
+      console.error('❌ registerUser: Error checking existing users:', checkError)
+      return { error: 'Có lỗi xảy ra khi kiểm tra thông tin' }
+    }
+
+    if (existingUsers && existingUsers.length > 0) {
+      console.log('⚠️  registerUser: Found existing user(s)')
+      const existingUser = existingUsers[0] as { email: string; phone: string }
+      if (existingUser.email === userData.email) {
         console.log('❌ registerUser: Email already exists')
         return { error: 'Email đã được sử dụng' }
       }
-      if (user.phone === userData.phone) {
+      if (existingUser.phone === userData.phone) {
         console.log('❌ registerUser: Phone already exists')
         return { error: 'Số điện thoại đã được sử dụng' }
       }
@@ -122,15 +127,14 @@ export async function registerUser(userData: RegisterData): Promise<{ user?: Aut
     console.log('💾 registerUser: Inserting new user to database...')
     const { data, error } = await supabaseAdmin
       .from('users')
-      // @ts-expect-error - Supabase type issue with insert
-      .insert([{
+      .insert({
         full_name: userData.full_name,
         email: userData.email,
         phone: userData.phone,
         birth_date: userData.birth_date || null,
         password_hash: hashedPassword,
         role: 'user'
-      }])
+      } as never)
       .select('id, email, full_name, phone, role')
       .single()
 

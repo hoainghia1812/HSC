@@ -350,43 +350,45 @@ export default function PracticeQuestions({ questions, title, timeLimit = 45 }: 
 
             {/* Navigation Buttons */}
             <div className="flex items-center justify-between gap-4">
-          <Button
-            onClick={handlePrevQuestion}
-            disabled={currentQuestionIndex === 0}
-                className="flex items-center gap-2 px-6 py-3 font-semibold"
+              <Button
+                onClick={handlePrevQuestion}
+                disabled={currentQuestionIndex === 0}
+                variant="outline"
+                className="flex items-center gap-2 px-6 py-3 border-2 font-semibold"
                 style={{ 
-                  backgroundColor: currentQuestionIndex === 0 ? '#e5e7eb' : PRIMARY_COLOR,
-                  color: currentQuestionIndex === 0 ? '#9ca3af' : 'white'
+                  borderColor: currentQuestionIndex === 0 ? '#e5e7eb' : PRIMARY_COLOR,
+                  color: currentQuestionIndex === 0 ? '#9ca3af' : PRIMARY_COLOR
                 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-            </svg>
-            Câu trước
-          </Button>
+                  <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                Câu trước
+              </Button>
 
-            <Button
+              <Button
                 onClick={handleSubmit}
                 className="px-6 py-3 text-white font-semibold"
                 style={{ backgroundColor: `${PRIMARY_COLOR}80` }}
               >
                 Nộp bài
-            </Button>
+              </Button>
 
-            <Button
-              onClick={handleNextQuestion}
+              <Button
+                onClick={handleNextQuestion}
                 disabled={currentQuestionIndex === totalQuestions - 1}
-                className="flex items-center gap-2 px-6 py-3 font-semibold"
+                variant="outline"
+                className="flex items-center gap-2 px-6 py-3 border-2 font-semibold"
                 style={{ 
-                  backgroundColor: currentQuestionIndex === totalQuestions - 1 ? '#e5e7eb' : PRIMARY_COLOR,
-                  color: currentQuestionIndex === totalQuestions - 1 ? '#9ca3af' : 'white'
+                  borderColor: currentQuestionIndex === totalQuestions - 1 ? '#e5e7eb' : PRIMARY_COLOR,
+                  color: currentQuestionIndex === totalQuestions - 1 ? '#9ca3af' : PRIMARY_COLOR
                 }}
-            >
-              Câu tiếp theo
+              >
+                Câu tiếp theo
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
-            </Button>
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                </svg>
+              </Button>
             </div>
           </div>
         </div>

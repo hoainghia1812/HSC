@@ -99,10 +99,28 @@ export async function POST(request: NextRequest) {
       correct_option
     }
 
-    const { data, error } = await supabaseAdmin
-      .from('questions')
-      // @ts-expect-error - Supabase type issue with insert array
-      .insert([insertPayload])
+    type InsertPayload = typeof insertPayload
+    type InsertedRow = {
+      id: string
+      content: string
+      option_a: string
+      option_b: string
+      option_c: string
+      option_d: string
+      correct_option: 'A' | 'B' | 'C' | 'D'
+      created_at: string
+    }
+    type QuestionsTable = {
+      insert: (values: InsertPayload) => {
+        select: (fields: string) => {
+          single: () => Promise<{ data: InsertedRow | null; error: unknown | null }>
+        }
+      }
+    }
+
+    const questionsTable = supabaseAdmin.from('questions') as unknown as QuestionsTable
+    const { data, error } = await questionsTable
+      .insert(insertPayload)
       .select('id, content, option_a, option_b, option_c, option_d, correct_option, created_at')
       .single()
 

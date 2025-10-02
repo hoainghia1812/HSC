@@ -32,8 +32,7 @@ export async function POST(request: NextRequest) {
 
     const { data, error } = await supabaseAdmin
       .from('questions')
-      // @ts-expect-error - Supabase type issue with insert array
-      .insert([insertPayload])
+      .insert(insertPayload)
       .select('id, content, option_a, option_b, option_c, option_d, correct_option, created_at')
       .single()
 

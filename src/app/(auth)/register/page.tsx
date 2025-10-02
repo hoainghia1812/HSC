@@ -100,7 +100,7 @@ export default function RegisterPage() {
 
       const data = await response.json()
 
-      if (response.ok && data.success) {
+      if (response.ok && data.user && data.token) {
         // Store token in localStorage
         localStorage.setItem('auth_token', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
@@ -113,8 +113,8 @@ export default function RegisterPage() {
           console.log('✅ Register successful - Role:', data.user.role)
         }
         
-        // Redirect to homepage
-        router.push('/')
+        // Redirect to login page after successful registration
+        router.push(ROUTES.LOGIN)
       } else {
         setErrors({ general: data.error || 'Có lỗi xảy ra khi đăng ký' })
       }
