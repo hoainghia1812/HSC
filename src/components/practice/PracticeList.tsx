@@ -109,11 +109,18 @@ export default function PracticeList({ questionSets }: PracticeListProps) {
           <h3 className="text-2xl font-bold mb-2" style={{ color: PRIMARY_COLOR }}>
             {searchQuery ? 'Không tìm thấy kết quả' : 'Chưa có đề thi nào'}
           </h3>
-          <p className="text-gray-500 text-center max-w-md">
+          <p className="text-gray-500 text-center max-w-md mb-4">
             {searchQuery 
               ? `Không tìm thấy bộ đề nào phù hợp với "${searchQuery}". Thử tìm kiếm với từ khóa khác.`
               : 'Hiện tại chưa có bộ đề trắc nghiệm nào. Vui lòng quay lại sau.'}
           </p>
+          
+          {/* Debug info */}
+          <div className="text-xs text-gray-400 text-center">
+            <p>Total question sets: {questionSets.length}</p>
+            <p>Filtered sets: {filteredSets.length}</p>
+            <p>Current page: {currentPage}</p>
+          </div>
         </div>
       ) : (
         <>

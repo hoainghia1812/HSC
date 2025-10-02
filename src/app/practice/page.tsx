@@ -24,22 +24,28 @@ async function getQuestionSets() {
     if (!res.ok) {
       const errorText = await res.text()
       console.error('API Error Response:', errorText)
-      throw new Error(`Failed to fetch question sets: ${res.status}`)
+      // Return empty array instead of throwing error
+      return []
     }
     
     const data = await res.json()
     console.log('API Response data:', data)
     console.log('Question sets count:', data.questionSets?.length || 0)
     
-    return data.questionSets || []
+    // Always return an array, even if empty
+    return Array.isArray(data.questionSets) ? data.questionSets : []
   } catch (error) {
     console.error('Error fetching question sets:', error)
+    // Return empty array instead of throwing error
     return []
   }
 }
 
 export default async function PracticePage() {
   const questionSets = await getQuestionSets()
+  
+  console.log('PracticePage - questionSets:', questionSets)
+  console.log('PracticePage - questionSets length:', questionSets?.length || 0)
 
   return (
     <div className="min-h-screen bg-white">
