@@ -91,7 +91,7 @@ export async function registerUser(userData: RegisterData): Promise<{ user?: Aut
       .from('users')
       .select('email, phone')
       .or(`email.eq.${userData.email},phone.eq.${userData.phone}`)
-      .single()
+      .maybeSingle()
 
     console.log('🔍 registerUser: Check existing user result:', { 
       hasData: !!existingUser, 
@@ -122,14 +122,15 @@ export async function registerUser(userData: RegisterData): Promise<{ user?: Aut
     console.log('💾 registerUser: Inserting new user to database...')
     const { data, error } = await supabaseAdmin
       .from('users')
-      .insert({
+      // @ts-expect-error - Supabase type issue with insert
+      .insert([{
         full_name: userData.full_name,
         email: userData.email,
         phone: userData.phone,
         birth_date: userData.birth_date || null,
         password_hash: hashedPassword,
         role: 'user'
-      } as never)
+      }])
       .select('id, email, full_name, phone, role')
       .single()
 

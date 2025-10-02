@@ -49,6 +49,7 @@ export interface Database {
           full_name: string
           phone: string
           birth_date: string | null
+          password_hash: string
           role: 'admin' | 'user' | 'vip1' | 'vip2' | 'vip3'
           created_at: string
           updated_at: string
@@ -59,6 +60,7 @@ export interface Database {
           full_name: string
           phone: string
           birth_date?: string | null
+          password_hash: string
           role?: 'admin' | 'user' | 'vip1' | 'vip2' | 'vip3'
           created_at?: string
           updated_at?: string
@@ -69,6 +71,7 @@ export interface Database {
           full_name?: string
           phone?: string
           birth_date?: string | null
+          password_hash?: string
           role?: 'admin' | 'user' | 'vip1' | 'vip2' | 'vip3'
           created_at?: string
           updated_at?: string
