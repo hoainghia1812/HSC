@@ -10,13 +10,12 @@ interface PageProps {
   }
 }
 
-export async function generateMetadata(props: Promise<PageProps>): Promise<Metadata> {
-  const { params } = await props
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { data: questionSet, error } = await supabaseAdmin
     .from('question_sets')
     .select('title')
     .eq('id', params.id)
-    .single()
+    .single<{ title: string }>() // 👈 ép kiểu cho Supabase
 
   if (error || !questionSet) {
     return {
@@ -24,14 +23,16 @@ export async function generateMetadata(props: Promise<PageProps>): Promise<Metad
     }
   }
 
-  const set = questionSet as { title: string }
   return {
-    title: `${set.title} | Trắc nghiệm online`,
-    description: `Luyện tập bộ đề ${set.title}`,
+    title: `${questionSet.title} | Trắc nghiệm online`,
+    description: `Luyện tập bộ đề ${questionSet.title}`,
   }
 }
 
-interface QuestionSetRow { id: string; title: string }
+interface QuestionSetRow {
+  id: string
+  title: string
+}
 
 async function getQuestionSet(id: string) {
   // Fetch set title
@@ -39,16 +40,19 @@ async function getQuestionSet(id: string) {
     .from('question_sets')
     .select('id, title')
     .eq('id', id)
-    .single()
+    .single<QuestionSetRow>() // 👈 ép kiểu cho Supabase
+
   if (setErr || !setRow) {
     console.error('Error fetching question set title:', setErr)
     return null
   }
 
-  // Fetch questions in flat schema and map to component shape
+  // Fetch questions
   const { data: questions, error: qErr } = await supabaseAdmin
     .from('questions')
-    .select('id, content, option_a, option_b, option_c, option_d, correct_option')
+    .select(
+      'id, content, option_a, option_b, option_c, option_d, correct_option'
+    )
     .eq('question_set_id', id)
     .order('created_at', { ascending: true })
 
@@ -57,7 +61,16 @@ async function getQuestionSet(id: string) {
     return null
   }
 
-  type FlatQuestion = { id: string; content: string; option_a: string; option_b: string; option_c: string; option_d: string; correct_option: 'A'|'B'|'C'|'D' }
+  type FlatQuestion = {
+    id: string
+    content: string
+    option_a: string
+    option_b: string
+    option_c: string
+    option_d: string
+    correct_option: 'A' | 'B' | 'C' | 'D'
+  }
+
   const mapped = ((questions as FlatQuestion[]) || []).map((q: FlatQuestion) => {
     const opts: QuestionOption[] = [
       { id: 'A', text: q.option_a, is_correct: q.correct_option === 'A' },
@@ -74,11 +87,14 @@ async function getQuestionSet(id: string) {
     }
   })
 
-  return { id: (setRow as QuestionSetRow).id, title: (setRow as QuestionSetRow).title, questions: mapped }
+  return {
+    id: setRow.id,
+    title: setRow.title,
+    questions: mapped,
+  }
 }
 
-export default async function PracticeQuestionSetPage(props: Promise<PageProps>) {
-  const { params } = await props
+export default async function PracticeQuestionSetPage({ params }: PageProps) {
   const questionSet = await getQuestionSet(params.id)
 
   if (!questionSet) {
@@ -86,7 +102,7 @@ export default async function PracticeQuestionSetPage(props: Promise<PageProps>)
   }
 
   return (
-    <PracticeQuestions 
+    <PracticeQuestions
       questions={questionSet.questions}
       title={questionSet.title}
       timeLimit={45}
