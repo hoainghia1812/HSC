@@ -24,17 +24,25 @@ export default function PracticeList({ questionSets }: PracticeListProps) {
   // Debug logging
   console.log('PracticeList received questionSets:', questionSets)
   console.log('QuestionSets length:', questionSets?.length || 0)
+  console.log('QuestionSets type:', typeof questionSets)
+  console.log('Is Array:', Array.isArray(questionSets))
+
+  // ✅ Defensive check: Đảm bảo questionSets là mảng
+  const safeQuestionSets = useMemo(() => 
+    Array.isArray(questionSets) ? questionSets : [],
+    [questionSets]
+  )
 
   // Lọc theo tìm kiếm
   const filteredSets = useMemo(() => {
-    if (!searchQuery.trim()) return questionSets
+    if (!searchQuery.trim()) return safeQuestionSets
     
     const query = searchQuery.toLowerCase()
-    return questionSets.filter(set => 
+    return safeQuestionSets.filter(set => 
       set.title.toLowerCase().includes(query) ||
       (set.description && set.description.toLowerCase().includes(query))
     )
-  }, [questionSets, searchQuery])
+  }, [safeQuestionSets, searchQuery])
 
   // Phân trang
   const totalPages = Math.ceil(filteredSets.length / ITEMS_PER_PAGE)

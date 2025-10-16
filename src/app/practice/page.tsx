@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { headers } from 'next/headers'
 import PracticeList from '@/components/practice/PracticeList'
 
 export const metadata: Metadata = {
@@ -8,23 +9,27 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic'
 
+async function getBaseUrl() {
+  const headersList = await headers()
+  const host = headersList.get('host') || 'localhost:3000'
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+  return `${protocol}://${host}`
+}
+
 async function getQuestionSets() {
   try {
     console.log('Fetching question sets from API...')
     
-    // ✅ Fix cho Vercel SSR: Thêm base URL khi chạy trên server
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
-                    (typeof window !== 'undefined' 
-                      ? window.location.origin 
-                      : process.env.VERCEL_URL 
-                        ? `https://${process.env.VERCEL_URL}` 
-                        : 'http://localhost:3000')
-    
+    // ✅ Sử dụng headers() để lấy đúng host trên Vercel
+    const baseUrl = await getBaseUrl()
     const url = `${baseUrl}/api/practice/question-sets`
     console.log('API URL:', url)
     
     const res = await fetch(url, {
-      cache: 'no-store'
+      cache: 'no-store',
+      headers: {
+        'Content-Type': 'application/json',
+      }
     })
     
     console.log('Response status:', res.status)
@@ -33,7 +38,6 @@ async function getQuestionSets() {
     if (!res.ok) {
       const errorText = await res.text()
       console.error('API Error Response:', errorText)
-      // Return empty array instead of throwing error
       return []
     }
     
@@ -44,8 +48,7 @@ async function getQuestionSets() {
     // Always return an array, even if empty
     return Array.isArray(data.questionSets) ? data.questionSets : []
   } catch (error) {
-    console.error('Error fetching question sets:', error)
-    // Return empty array instead of throwing error
+    console.error('Fetch error:', error)
     return []
   }
 }
