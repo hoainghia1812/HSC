@@ -48,37 +48,77 @@ export default async function PracticePage() {
   console.log('PracticePage - questionSets length:', questionSets?.length || 0)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Background decoration */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
 
       <div className="relative">
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
           {/* Header */}
-          <div className="mb-10 text-center">
-            <div className="inline-flex items-center justify-center mb-5">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-2xl blur-lg opacity-20 animate-pulse" style={{ backgroundColor: '#17a2b8' }} />
-                <div className="relative bg-white backdrop-blur-sm rounded-2xl px-5 py-2.5 shadow-lg border-2" style={{ borderColor: '#17a2b8' }}>
-                  <div className="flex items-center gap-2.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="#17a2b8">
-                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-                    </svg>
-                    <span className="text-sm font-semibold" style={{ color: '#17a2b8' }}>
-                      Luyện tập thông minh
+          <div className="mb-12 text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center justify-center mb-6">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl px-6 py-3 shadow-lg border border-indigo-100">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg blur-sm opacity-50"></div>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 relative z-10" viewBox="0 0 20 20" fill="url(#gradient)">
+                        <defs>
+                          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#6366f1" />
+                            <stop offset="100%" stopColor="#8b5cf6" />
+                          </linearGradient>
+                        </defs>
+                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+                      </svg>
+                    </div>
+                    <span className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      Luyện tập trắc nghiệm online
                     </span>
                   </div>
                 </div>
               </div>
             </div>
             
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-3">
-              <span style={{ color: '#17a2b8' }}>
-                Danh sách Bộ Đề Trắc Nghiệm
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4">
+              <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                Kho Đề Thi Trắc Nghiệm
               </span>
             </h1>
             
-            <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#17a2b8' }}>
-              Chọn bộ đề phù hợp và bắt đầu luyện tập ngay
+            {/* Subtitle */}
+            <p className="text-base md:text-lg max-w-2xl mx-auto text-slate-600 font-medium">
+              Hơn <span className="text-indigo-600 font-bold">{questionSets.length}</span> bộ đề chất lượng cao
+              <br />
+              <span className="text-sm text-slate-500">Lựa chọn đề thi phù hợp và bắt đầu chinh phục điểm cao</span>
             </p>
+
+            {/* Quick stats */}
+            <div className="flex items-center justify-center gap-8 mt-8">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-indigo-600">{questionSets.length}</div>
+                <div className="text-xs text-slate-500 font-medium">Bộ đề</div>
+              </div>
+              <div className="w-px h-10 bg-slate-200"></div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600">
+                  {questionSets.reduce((sum: number, set: { questionCount?: number }) => sum + (set.questionCount || 0), 0)}
+                </div>
+                <div className="text-xs text-slate-500 font-medium">Câu hỏi</div>
+              </div>
+              <div className="w-px h-10 bg-slate-200"></div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-emerald-600">Free</div>
+                <div className="text-xs text-slate-500 font-medium">Miễn phí</div>
+              </div>
+            </div>
           </div>
 
           {/* Practice List Component with Search & Pagination */}

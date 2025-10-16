@@ -104,3 +104,161 @@ create trigger trg_update_results
 after insert or update on user_answers
 for each row
 execute function update_user_results_stats();
+
+-- =====================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES
+-- =====================================================
+
+-- Enable RLS on all tables
+alter table users enable row level security;
+
+alter table question_sets enable row level security;
+
+alter table questions enable row level security;
+
+alter table user_results enable row level security;
+
+alter table user_answers enable row level security;
+
+-- USERS table policies
+-- Users can read their own data
+create policy "Users can view own profile"
+  on users for select
+  using (auth.uid()::text = id::text);
+
+-- Users can update their own profile
+create policy "Users can update own profile"
+  on users for update
+  using (auth.uid()::text = id::text);
+
+-- QUESTION_SETS table policies
+-- Everyone can read question sets (for practice)
+create policy "Anyone can view question sets" on question_sets for
+select to public using (true);
+
+-- Only admins can create question sets
+create policy "Only admins can create question sets"
+  on question_sets for insert
+  with check (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- Only admins can update question sets
+create policy "Only admins can update question sets"
+  on question_sets for update
+  using (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- Only admins can delete question sets
+create policy "Only admins can delete question sets"
+  on question_sets for delete
+  using (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- QUESTIONS table policies
+-- Everyone can read questions (for practice)
+create policy "Anyone can view questions" on questions for
+select to public using (true);
+
+-- Only admins can create questions
+create policy "Only admins can create questions"
+  on questions for insert
+  with check (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- Only admins can update questions
+create policy "Only admins can update questions"
+  on questions for update
+  using (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- Only admins can delete questions
+create policy "Only admins can delete questions"
+  on questions for delete
+  using (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- USER_RESULTS table policies
+-- Users can only view their own results
+create policy "Users can view own results"
+  on user_results for select
+  using (auth.uid()::text = user_id::text);
+
+-- Users can create their own results
+create policy "Users can create own results"
+  on user_results for insert
+  with check (auth.uid()::text = user_id::text);
+
+-- Admins can view all results
+create policy "Admins can view all results"
+  on user_results for select
+  using (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
+
+-- USER_ANSWERS table policies
+-- Users can view their own answers
+create policy "Users can view own answers"
+  on user_answers for select
+  using (
+    exists (
+      select 1 from user_results
+      where user_results.id = user_answers.result_id
+      and user_results.user_id::text = auth.uid()::text
+    )
+  );
+
+-- Users can create their own answers
+create policy "Users can create own answers"
+  on user_answers for insert
+  with check (
+    exists (
+      select 1 from user_results
+      where user_results.id = user_answers.result_id
+      and user_results.user_id::text = auth.uid()::text
+    )
+  );
+
+-- Admins can view all answers
+create policy "Admins can view all answers"
+  on user_answers for select
+  using (
+    exists (
+      select 1 from users
+      where users.id::text = auth.uid()::text
+      and users.role = 'admin'
+    )
+  );
