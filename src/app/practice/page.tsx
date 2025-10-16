@@ -11,7 +11,8 @@ export const dynamic = 'force-dynamic'
 async function getQuestionSets() {
   try {
     console.log('Fetching question sets from API...')
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/practice/question-sets`
+    // ✅ Dùng absolute path - hoạt động cho cả local và production
+    const url = '/api/practice/question-sets'
     console.log('API URL:', url)
     
     const res = await fetch(url, {
