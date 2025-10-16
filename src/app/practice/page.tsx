@@ -11,8 +11,16 @@ export const dynamic = 'force-dynamic'
 async function getQuestionSets() {
   try {
     console.log('Fetching question sets from API...')
-    // ✅ Dùng absolute path - hoạt động cho cả local và production
-    const url = '/api/practice/question-sets'
+    
+    // ✅ Fix cho Vercel SSR: Thêm base URL khi chạy trên server
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 
+                    (typeof window !== 'undefined' 
+                      ? window.location.origin 
+                      : process.env.VERCEL_URL 
+                        ? `https://${process.env.VERCEL_URL}` 
+                        : 'http://localhost:3000')
+    
+    const url = `${baseUrl}/api/practice/question-sets`
     console.log('API URL:', url)
     
     const res = await fetch(url, {
