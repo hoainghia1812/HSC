@@ -68,7 +68,7 @@ export default function PracticeList({ questionSets }: PracticeListProps) {
             <div className="relative">
               <input
                 type="text"
-                placeholder="🔍 Tìm kiếm bộ đề theo tên, nội dung..."
+                placeholder=" Tìm kiếm bộ đề theo tên, nội dung..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="w-full px-6 py-4 pl-14 rounded-xl border-0 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-slate-800 placeholder:text-slate-400 font-medium"
@@ -166,76 +166,73 @@ export default function PracticeList({ questionSets }: PracticeListProps) {
               const gradient = gradients[index % gradients.length]
               
               return (
-                <div key={set.id} className="group">
+                <Link 
+                  key={set.id} 
+                  href={`/practice/${set.id}`} 
+                  className="group block"
+                >
                   <div className="relative h-full">
-                    {/* Hover glow effect */}
-                    <div className={`absolute -inset-1 bg-gradient-to-r ${gradient} rounded-3xl blur-lg opacity-0 group-hover:opacity-30 transition duration-500`} />
+                    {/* Subtle hover glow */}
+                    <div className={`absolute -inset-1 bg-gradient-to-r ${gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500`} />
                     
-                    {/* Card */}
-                    <div className="relative h-full bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border-2 border-white overflow-hidden transition-all duration-500 group-hover:shadow-2xl group-hover:-translate-y-2">
-                      {/* Gradient header bar */}
+                    {/* Card Container */}
+                    <div className="relative h-full bg-white rounded-2xl border border-slate-200/60 overflow-hidden transition-all duration-300 hover:border-indigo-200 hover:shadow-xl hover:-translate-y-1">
+                      
+                      {/* Top Accent */}
                       <div className={`h-1.5 bg-gradient-to-r ${gradient}`} />
                       
                       <div className="p-6">
-                        {/* Icon with gradient background */}
-                        <div className="mb-5">
-                          <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor">
-                              <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
-                            </svg>
+                        {/* Title Section */}
+                        <div className="mb-4">
+                          <h3 className="text-xl font-bold text-slate-800 mb-2 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors">
+                            {set.title}
+                          </h3>
+                          <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed">
+                            {set.description || 'Bộ câu hỏi trắc nghiệm được tuyển chọn kỹ lưỡng'}
+                          </p>
+                        </div>
+
+                        {/* Divider */}
+                        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-4" />
+
+                        {/* Info Grid */}
+                        <div className="grid grid-cols-2 gap-3 mb-5">
+                          <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg">
+                            <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center flex-shrink-0`}>
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs text-slate-500 font-medium">Câu hỏi</div>
+                              <div className="text-sm font-bold text-slate-800">{set.questionCount} câu</div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 rounded-lg">
+                            <div className="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-xs text-emerald-600 font-medium">100%</div>
+                              <div className="text-sm font-bold text-emerald-700">Có trong đề thi</div>
+                            </div>
                           </div>
                         </div>
 
-                        {/* Title */}
-                        <h3 className="text-xl font-black mb-3 line-clamp-2 min-h-[3.5rem] text-slate-800 group-hover:text-indigo-600 transition-colors">
-                          {set.title}
-                        </h3>
-
-                        {/* Description */}
-                        <p className="text-sm mb-5 line-clamp-2 min-h-[2.5rem] text-slate-500 leading-relaxed">
-                          {set.description || `Bộ đề gồm ${set.questionCount} câu hỏi trắc nghiệm chất lượng cao`}
-                        </p>
-
-                        {/* Stats */}
-                        <div className="flex items-center gap-4 mb-6">
-                          <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                            </svg>
-                            <span className="font-bold text-slate-700 text-sm">{set.questionCount}</span>
-                            <span className="text-xs text-slate-500">câu</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-1.5 text-slate-400 text-xs">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                            </svg>
-                            <span>{new Date(set.created_at).toLocaleDateString('vi-VN')}</span>
-                          </div>
-                        </div>
-
-                        {/* Difficulty badge (mock for now) */}
-                        <div className="flex items-center gap-2 mb-6">
-                          <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-xs font-bold rounded-full border border-emerald-200">
-                            ⚡ Dễ - Trung bình
-                          </span>
-                        </div>
-
-                        {/* CTA Button */}
-                        <Link href={`/practice/${set.id}`} className="block">
-                          <button 
-                            className={`w-full bg-gradient-to-r ${gradient} text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105 flex items-center justify-center gap-2`}
-                          >
-                            <span>Bắt đầu làm bài</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                        </Link>
+                        {/* Action Button */}
+                        <button className={`w-full py-3.5 rounded-xl bg-gradient-to-r ${gradient} text-white font-semibold shadow-lg group-hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2`}>
+                          <span>Bắt đầu làm bài</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               )
             })}
           </div>

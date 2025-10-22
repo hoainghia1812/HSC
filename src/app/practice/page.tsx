@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
+import Link from 'next/link'
 import PracticeList from '@/components/practice/PracticeList'
 
 export const metadata: Metadata = {
@@ -70,6 +71,18 @@ export default async function PracticePage() {
 
       <div className="relative">
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
+          {/* Back Button */}
+          <div className="mb-6">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-xl border-2 border-indigo-100 text-indigo-600 font-semibold hover:bg-indigo-50 hover:border-indigo-200 transition-all shadow-md hover:shadow-lg group"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
+          </div>
+
           {/* Header */}
           <div className="mb-12 text-center">
             {/* Badge */}
@@ -111,26 +124,6 @@ export default async function PracticePage() {
               <br />
               <span className="text-sm text-slate-500">Lựa chọn đề thi phù hợp và bắt đầu chinh phục điểm cao</span>
             </p>
-
-            {/* Quick stats */}
-            <div className="flex items-center justify-center gap-8 mt-8">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-indigo-600">{questionSets.length}</div>
-                <div className="text-xs text-slate-500 font-medium">Bộ đề</div>
-              </div>
-              <div className="w-px h-10 bg-slate-200"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">
-                  {questionSets.reduce((sum: number, set: { questionCount?: number }) => sum + (set.questionCount || 0), 0)}
-                </div>
-                <div className="text-xs text-slate-500 font-medium">Câu hỏi</div>
-              </div>
-              <div className="w-px h-10 bg-slate-200"></div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-emerald-600">Free</div>
-                <div className="text-xs text-slate-500 font-medium">Miễn phí</div>
-              </div>
-            </div>
           </div>
 
           {/* Practice List Component with Search & Pagination */}

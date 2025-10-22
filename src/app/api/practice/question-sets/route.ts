@@ -25,7 +25,7 @@ export async function GET() {
         id,
         title,
         created_at,
-        questions(count)
+        questions(id)
       `)
       .order('created_at', { ascending: false })
 

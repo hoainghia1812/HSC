@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
         created_by,
         created_at,
         users!question_sets_created_by_fkey(full_name),
-        questions(count)
+        questions(id)
       `)
       .order('created_at', { ascending: false })
 

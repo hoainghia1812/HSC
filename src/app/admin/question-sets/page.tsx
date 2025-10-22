@@ -137,11 +137,17 @@ export default function AdminQuestionSets() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <Link href="/admin" className="text-indigo-600 hover:text-indigo-800 mr-4">
-                ← Quay lại Dashboard
-              </Link>
+              <button 
+                onClick={() => router.back()}
+                className="mr-4 p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"
+                title="Quay lại"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </button>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">📚 Quản lý Bộ đề</h1>
+                <h1 className="text-3xl font-bold text-gray-900"> Quản lý Bộ đề</h1>
                 <p className="text-gray-600 mt-1">Tổng cộng: {filteredQuestionSets.length} bộ đề</p>
               </div>
             </div>
@@ -160,11 +166,11 @@ export default function AdminQuestionSets() {
         {showCreateForm && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
-              <h3 className="text-lg font-semibold mb-4">Tạo bộ đề mới</h3>
+              <h3 className="text-lg text-gray-900 font-semibold mb-4">Tạo bộ đề mới</h3>
               <input
                 type="text"
                 placeholder="Nhập tên bộ đề..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-4"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-4 placeholder:text-gray-400 text-gray-900"
                 value={newSetTitle}
                 onChange={(e) => setNewSetTitle(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && createQuestionSet()}
@@ -194,8 +200,8 @@ export default function AdminQuestionSets() {
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <input
             type="text"
-            placeholder="Tìm kiếm bộ đề theo tên hoặc người tạo..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="🔍 Tìm kiếm bộ đề..."
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-gray-400 text-gray-900"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
