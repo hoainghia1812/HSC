@@ -870,10 +870,7 @@ export default function CertificatesPage() {
             className="bg-white rounded-3xl max-w-md w-full shadow-2xl animate-scale-in overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-           
-
               {/* QR Code Image */}
-              
                   <Image 
                     src="/zalo.jpg" 
                     alt="Zalo QR Code - Phạm Hoài Nghĩa" 
@@ -884,10 +881,6 @@ export default function CertificatesPage() {
                   />
                 </div>
               </div>
-
-              
-            
-         
       )}
 
       <style jsx>{`

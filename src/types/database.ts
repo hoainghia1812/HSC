@@ -129,6 +129,38 @@ export interface Database {
           created_at?: string
         }
       }
+      user_results: {
+        Row: {
+          id: string
+          user_id: string
+          question_set_id: string
+          total_questions: number
+          correct_count: number
+          wrong_count: number
+          score: number
+          taken_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          question_set_id: string
+          total_questions: number
+          correct_count: number
+          wrong_count: number
+          score: number
+          taken_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          question_set_id?: string
+          total_questions?: number
+          correct_count?: number
+          wrong_count?: number
+          score?: number
+          taken_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
