@@ -2,9 +2,54 @@
 
 import { MainLayout } from '@/components/layouts/MainLayout'
 import { Card, CardContent } from '@/components/ui/Card'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function AboutPage() {
+  const [donateAmount, setDonateAmount] = useState<string>('')
+  const [showQRModal, setShowQRModal] = useState(false)
+  const [selectedTier, setSelectedTier] = useState<string>('')
+
+  // Thông tin ngân hàng
+  const bankInfo = {
+    bankId: 'VCB', // Mã ngân hàng
+    bankName: 'Vietcombank', // Tên ngân hàng đầy đủ
+    accountNumber: '1023558782', // Số tài khoản
+    accountName: 'Phạm Hoài Nghĩa', // Tên chủ tài khoản
+  }
+
+  // QR Code cho từng gói ủng hộ và phương thức thanh toán
+  const qrCodeMap: { [key: string]: string } = {
+    'Cà phê': '/50.jpg',           // QR cho gói 50k
+    'Bữa trưa': '/100.jpg',         // QR cho gói 100k (tạo file này nếu có)
+    'Sách tài liệu': '/200.jpg',   // QR cho gói 200k (tạo file này nếu có)
+    'Tùy chỉnh': '/tuychinh.jpg', // QR mặc định cho gói tùy chỉnh
+    'Momo': '/momo.jpg'            // QR Momo (đặt file momo.jpg vào public/)
+  }
+
+  const handleDonate = (amount: string, tierName: string) => {
+    if (tierName === 'Tùy chỉnh') {
+      setSelectedTier(tierName)
+      setDonateAmount('')
+      setShowQRModal(true)
+    } else {
+      const numericAmount = amount.replace(/[^0-9]/g, '')
+      setDonateAmount(numericAmount)
+      setSelectedTier(tierName)
+      setShowQRModal(true)
+    }
+  }
+
+  // Handler cho phương thức thanh toán (Momo, VNPay, etc.)
+  const handlePaymentMethod = (methodName: string) => {
+    setSelectedTier(methodName)
+    setDonateAmount('') // Không cần hiển thị số tiền cho phương thức thanh toán
+    setShowQRModal(true)
+  }
+
+  // Lấy QR code theo tier
+  const getQRCode = () => {
+    return qrCodeMap[selectedTier] || '/images/qr-code.png'
+  }
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -161,6 +206,34 @@ export default function AboutPage() {
 
         .float-animation {
           animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fadeIn 0.2s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scaleIn 0.3s ease-out;
         }
       `}</style>
 
@@ -379,6 +452,157 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Donate Section */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 sm:mb-16 scroll-animate">
+            <div className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-gradient-to-r from-green-100 to-blue-100 border border-green-200 text-green-700 text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+              💝 Ủng hộ chúng tôi
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
+              Đồng hành cùng SecuriTest
+            </h2>
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto px-4 leading-relaxed">
+              Sự ủng hộ của bạn giúp chúng tôi tiếp tục phát triển nền tảng, 
+              cải thiện chất lượng nội dung và mang đến trải nghiệm học tập tốt nhất cho cộng đồng
+            </p>
+          </div>
+
+          {/* Donation Tiers */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl mx-auto mb-8 sm:mb-12">
+            {[
+              {
+                icon: "☕",
+                name: "Cà phê",
+                amount: "50,000₫",
+                description: "Một ly cà phê cho đội ngũ",
+                color: "from-amber-500 to-orange-500"
+              },
+              {
+                icon: "🍕",
+                name: "Bữa trưa",
+                amount: "100,000₫",
+                description: "Bữa trưa cho team",
+                color: "from-green-500 to-emerald-500",
+                popular: true
+              },
+              {
+                icon: "📚",
+                name: "Sách tài liệu",
+                amount: "200,000₫",
+                description: "Mua tài liệu cập nhật mới",
+                color: "from-blue-500 to-cyan-500"
+              },
+              {
+                icon: "💎",
+                name: "Tùy chỉnh",
+                amount: "Tùy ý",
+                description: "Số tiền bạn muốn ủng hộ",
+                color: "from-purple-500 to-pink-500"
+              }
+            ].map((tier, index) => (
+              <Card key={index} className={`scroll-animate scale-in stagger-${index + 1} group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${tier.popular ? 'border-2 border-green-500 relative' : 'border-0'}`}>
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-500 to-blue-500 text-white text-xs font-bold shadow-lg">
+                      ⭐ Phổ biến nhất
+                    </span>
+                  </div>
+                )}
+                <CardContent className="p-5 sm:p-6 lg:p-8 text-center">
+                  <div className={`w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 rounded-full bg-gradient-to-br ${tier.color} flex items-center justify-center text-2xl sm:text-3xl lg:text-4xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    {tier.icon}
+                  </div>
+                  
+                  <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2">
+                    {tier.name}
+                  </h3>
+                  
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2 sm:mb-3">
+                    {tier.amount}
+                  </div>
+                  
+                  <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
+                    {tier.description}
+                  </p>
+                  
+                  <button 
+                    onClick={() => handleDonate(tier.amount, tier.name)}
+                    className={`w-full px-4 py-2 sm:py-2.5 rounded-lg font-semibold text-sm sm:text-base transition-all duration-300 ${
+                      tier.popular 
+                        ? 'bg-gradient-to-r from-green-600 to-blue-600 text-white hover:shadow-lg hover:scale-105' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}>
+                    Ủng hộ ngay
+                  </button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Why Support */}
+          <div className="max-w-4xl mx-auto scroll-animate">
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-6 sm:p-8 lg:p-10">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">
+                Sự ủng hộ của bạn sẽ giúp:
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {[
+                  { icon: "🚀", text: "Phát triển tính năng mới" },
+                  { icon: "📖", text: "Cập nhật ngân hàng câu hỏi" },
+                  { icon: "💻", text: "Cải thiện giao diện người dùng" },
+                  { icon: "🎓", text: "Tạo thêm khóa học miễn phí" },
+                  { icon: "🔧", text: "Bảo trì và tối ưu hệ thống" },
+                  { icon: "🌟", text: "Hỗ trợ học viên tốt hơn" }
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-3 bg-white rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow duration-300">
+                    <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-100 to-blue-100 rounded-full flex items-center justify-center text-base sm:text-lg">
+                      {item.icon}
+                    </div>
+                    <span className="text-sm sm:text-base text-gray-700 font-medium">
+                      {item.text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Methods */}
+          <div className="max-w-3xl mx-auto mt-8 sm:mt-12 text-center scroll-animate">
+            <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">Các phương thức thanh toán được hỗ trợ:</p>
+            <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6">
+              {[
+                { name: "Momo", icon: "💳", hasQR: true },
+                { name: "VNPay", icon: "💰", hasQR: false },
+                { name: "Banking", icon: "🏦", hasQR: false },
+                { name: "Visa/Master", icon: "💳", hasQR: false }
+              ].map((method, index) => (
+                <button
+                  key={index}
+                  onClick={() => method.hasQR && handlePaymentMethod(method.name)}
+                  disabled={!method.hasQR}
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-50 rounded-lg transition-all ${
+                    method.hasQR 
+                      ? 'hover:bg-green-100 hover:text-green-700 hover:shadow-md cursor-pointer hover:scale-105' 
+                      : 'hover:bg-gray-100 cursor-default'
+                  }`}
+                >
+                  <span className="text-base sm:text-lg">{method.icon}</span>
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium">{method.name}</span>
+                  {method.hasQR && (
+                    <span className="ml-1 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">QR</span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs sm:text-sm text-gray-400 mt-4 sm:mt-6 italic px-4">
+              💚 Mọi đóng góp đều vô cùng ý nghĩa với chúng tôi. Xin chân thành cảm ơn!
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-green-600 to-blue-600 text-white">
         <div className="container mx-auto px-4 sm:px-6 text-center scroll-animate scale-in">
@@ -411,6 +635,141 @@ export default function AboutPage() {
            </div>
         </div>
       </section>
+
+      {/* QR Code Modal */}
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white p-4 sm:p-6 rounded-t-2xl">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold mb-1">Ủng hộ SecuriTest</h3>
+                  <p className="text-green-100 text-sm sm:text-base">{selectedTier}</p>
+                </div>
+                <button
+                  onClick={() => setShowQRModal(false)}
+                  className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 sm:p-6">
+              {/* QR Code Display */}
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl p-4 sm:p-6">
+                  <div className="text-center mb-3">
+                    <p className="text-sm text-gray-600 mb-1">
+                      {selectedTier === 'Momo' ? 'Quét mã QR Momo để thanh toán' : 'Quét mã QR để chuyển khoản'}
+                    </p>
+                    {donateAmount && donateAmount !== '0' && (
+                      <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                        {new Intl.NumberFormat('vi-VN').format(parseInt(donateAmount))} VNĐ
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* QR Code Image */}
+                  <div className="bg-white p-3 sm:p-4 rounded-xl shadow-lg flex justify-center">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={getQRCode()}
+                      alt="QR Code Chuyển khoản"
+                      className="w-full max-w-[280px] h-auto rounded-lg"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="280" height="280"><rect width="280" height="280" fill="%23f3f4f6"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="%236b7280" font-size="14">Chưa có QR code</text><text x="50%" y="60%" text-anchor="middle" dy=".3em" fill="%239ca3af" font-size="12">cho gói này</text></svg>'
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Bank Info - Chỉ hiển thị khi không phải Momo */}
+                {selectedTier !== 'Momo' && (
+                  <div className="bg-gray-50 rounded-xl p-4 space-y-3">
+                    <h4 className="font-semibold text-gray-900 text-sm sm:text-base flex items-center gap-2">
+                      <span className="text-lg">🏦</span>
+                      Thông tin chuyển khoản:
+                    </h4>
+                    <div className="space-y-2 text-xs sm:text-sm">
+                      <div className="flex justify-between items-center bg-white p-2.5 sm:p-3 rounded-lg">
+                        <span className="text-gray-600">Ngân hàng:</span>
+                        <span className="font-semibold text-gray-900">{bankInfo.bankName}</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-white p-2.5 sm:p-3 rounded-lg">
+                        <span className="text-gray-600">Số tài khoản:</span>
+                        <span className="font-semibold text-gray-900 select-all">{bankInfo.accountNumber}</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-white p-2.5 sm:p-3 rounded-lg">
+                        <span className="text-gray-600">Chủ tài khoản:</span>
+                        <span className="font-semibold text-gray-900">{bankInfo.accountName}</span>
+                      </div>
+                      <div className="bg-green-50 border border-green-200 p-2.5 sm:p-3 rounded-lg">
+                        <p className="text-xs text-gray-600 mb-1">Nội dung chuyển khoản:</p>
+                        <p className="font-semibold text-green-700 select-all text-sm">
+                          Ung ho SecuriTest
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Momo Instructions */}
+                {selectedTier === 'Momo' && (
+                  <div className="bg-pink-50 border border-pink-200 rounded-xl p-4">
+                    <h4 className="font-semibold text-gray-900 text-sm sm:text-base flex items-center gap-2 mb-3">
+                      <span className="text-lg">📱</span>
+                      Hướng dẫn thanh toán Momo:
+                    </h4>
+                    <ol className="space-y-2 text-xs sm:text-sm text-gray-700">
+                      <li className="flex gap-2">
+                        <span className="font-semibold text-pink-600">1.</span>
+                        <span>Mở ứng dụng Momo trên điện thoại</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-semibold text-pink-600">2.</span>
+                        <span>Chọn &ldquo;Quét mã QR&rdquo;</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-semibold text-pink-600">3.</span>
+                        <span>Quét mã QR ở trên</span>
+                      </li>
+                      <li className="flex gap-2">
+                        <span className="font-semibold text-pink-600">4.</span>
+                        <span>Xác nhận số tiền và hoàn tất thanh toán</span>
+                      </li>
+                    </ol>
+                  </div>
+                )}
+
+                {/* Thank you message */}
+                <div className="text-center p-4 bg-gradient-to-r from-green-100 to-blue-100 rounded-xl">
+                  <p className="text-sm text-gray-700">
+                    💚 <span className="font-semibold">Xin chân thành cảm ơn!</span>
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Sự ủng hộ của bạn giúp chúng tôi phát triển tốt hơn
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t p-4 sm:p-6 bg-gray-50 rounded-b-2xl">
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg transition-colors text-sm sm:text-base"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </MainLayout>
   )
 }

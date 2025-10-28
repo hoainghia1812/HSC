@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/utils'
 import { AuthUser } from '@/types'
@@ -22,6 +22,7 @@ export function MainLayout({
   showSidebar = false 
 }: MainLayoutProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [user, setUser] = useState<AuthUser | null>(null)
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -92,21 +93,61 @@ export function MainLayout({
               
               {/* Navigation - Desktop */}
               <nav className="hidden md:flex items-center space-x-6">
-                <Link href="/" className="text-gray-600 hover:text-green-600 transition-colors">
+                <Link 
+                  href="/" 
+                  className={cn(
+                    "transition-colors",
+                    pathname === '/' 
+                      ? "text-green-600 font-semibold" 
+                      : "text-gray-600 hover:text-green-600"
+                  )}
+                >
                   Trang chủ
                 </Link>
-                <Link href="/certificates" className="text-gray-600 hover:text-green-600 transition-colors">
+                <Link 
+                  href="/certificates" 
+                  className={cn(
+                    "transition-colors",
+                    pathname === '/certificates' 
+                      ? "text-green-600 font-semibold" 
+                      : "text-gray-600 hover:text-green-600"
+                  )}
+                >
                   Chứng chỉ
                 </Link>
-                <Link href="/about" className="text-gray-600 hover:text-green-600 transition-colors">
+                <Link 
+                  href="/about" 
+                  className={cn(
+                    "transition-colors",
+                    pathname === '/about' 
+                      ? "text-green-600 font-semibold" 
+                      : "text-gray-600 hover:text-green-600"
+                  )}
+                >
                   Về chúng tôi
                 </Link>
                 {user && (
                   <>
-                    <Link href="/practice" className="text-gray-600 hover:text-green-600 transition-colors">
+                    <Link 
+                      href="/practice" 
+                      className={cn(
+                        "transition-colors",
+                        pathname?.startsWith('/practice') 
+                          ? "text-green-600 font-semibold" 
+                          : "text-gray-600 hover:text-green-600"
+                      )}
+                    >
                       Luyện tập
                     </Link>
-                    <Link href="/exams" className="text-gray-600 hover:text-green-600 transition-colors">
+                    <Link 
+                      href="/exams" 
+                      className={cn(
+                        "transition-colors",
+                        pathname?.startsWith('/exams') 
+                          ? "text-green-600 font-semibold" 
+                          : "text-gray-600 hover:text-green-600"
+                      )}
+                    >
                       Thi thử
                     </Link>
                   </>
@@ -245,7 +286,12 @@ export function MainLayout({
                 <div className="space-y-2">
                   <Link 
                     href="/" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname === '/' 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">🏠</span>
@@ -254,7 +300,12 @@ export function MainLayout({
                   
                   <Link 
                     href="/certificates" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname === '/certificates' 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">📋</span>
@@ -263,7 +314,12 @@ export function MainLayout({
 
                   <Link 
                     href="/about" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname === '/about' 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">✨</span>
@@ -378,7 +434,12 @@ export function MainLayout({
 
                   <Link 
                     href="/" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname === '/' 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">🏠</span>
@@ -387,7 +448,12 @@ export function MainLayout({
                   
                   <Link 
                     href="/certificates" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname === '/certificates' 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">📋</span>
@@ -396,7 +462,12 @@ export function MainLayout({
 
                   <Link 
                     href="/about" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname === '/about' 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">✨</span>
@@ -405,7 +476,12 @@ export function MainLayout({
 
                   <Link 
                     href="/practice" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname?.startsWith('/practice') 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">📚</span>
@@ -414,7 +490,12 @@ export function MainLayout({
 
                   <Link 
                     href="/exams" 
-                    className="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors group"
+                    className={cn(
+                      "flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors group",
+                      pathname?.startsWith('/exams') 
+                        ? "text-green-600 bg-green-50 font-semibold" 
+                        : "text-gray-700 hover:text-green-600 hover:bg-green-50"
+                    )}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     <span className="text-xl">📝</span>
